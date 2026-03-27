@@ -1,0 +1,31 @@
+text,label
+"Dear valued customer, Your account has been compromised. Please click here to verify your identity immediately. This is urgent and time-sensitive. Worst bank",phishing
+"Hi John, Great meeting with you yesterday. Looking forward to collaborating on the project. Let's schedule a call next week. Best regards, Sarah",legitimate
+"URGENT: Your Apple ID will be closed in 24 hours. Click here to confirm your account. Apple Security Team",phishing
+"Hello, Thank you for your purchase. Your order #12345 will be delivered in 2-3 business days. Track your order here. Customer Service",legitimate
+"Congratulations! You have won a prize. Click the link to claim your reward immediately. Limited time offer!",phishing
+"Hi, Just checking in to see how the project is progressing. Let me know if you need any resources. Thanks!",legitimate
+"WARNING: Unusual activity detected on your PayPal account. Confirm your password immediately to prevent account suspension.",phishing
+"Hello Sarah, The team meeting scheduled for 3 PM is moved to 4 PM. Please update your calendar accordingly. Thanks!",legitimate
+"VERIFY YOUR BANK ACCOUNT NOW! Your account has been locked due to suspicious activity. Click here to unlock.",phishing
+"Hi, Thanks for reaching out. I'd be happy to help with your query. Here's the information you requested.",legitimate
+"Claim your free gift card now! Limited slots available. Click here immediately!",phishing
+"Hi Team, Just a reminder about the quarterly review meeting tomorrow at 10 AM. See you there!",legitimate
+"Your Amazon account requires immediate verification. Click the link below to confirm your payment method.",phishing
+"Hello, Your invoice #INV-2024-001 is attached. Please process the payment by the end of this month. Thanks!",legitimate
+"ALERT: Your Facebook account has been accessed from an unknown location. Secure your account now!",phishing
+"Hi, I'm following up on our previous conversation. Could you send me the updated proposal by Friday?",legitimate
+"Urgent: Your Netflix subscription has expired. Update your payment information immediately to continue watching.",phishing
+"Hello John, Welcome to our team! Please review the company handbook attached. Let me know if you have questions.",legitimate
+"Confirm your Google Account details now! Someone tried to sign in to your account. Click here immediately!",phishing
+"Hi, Just wanted to say thanks for the great work on the latest deliverable. Your effort was much appreciated!",legitimate
+"FREE MONEY! Earn $5000 weekly from home. No experience needed. Sign up now!",phishing
+"Hello, The quarterly earnings report has been published. Here's the link to the latest document.",legitimate
+"URGENT: Update your Microsoft Office 365 License immediately or lose access to your files!",phishing
+"Hi Sarah, Let's catch up this weekend. How about coffee on Saturday at 10?",legitimate
+"Your package delivery failed. Click here to reschedule or update address. DHL Express",phishing
+"Hello Team, The office will be closed on March 27 for maintenance. Please plan accordingly.",legitimate
+"Verify your identity to unlock premium features. Update your profile with recent photos now!",phishing
+"Hi John, Sorry for the late reply. Here are the answers to your questions from earlier.",legitimate
+"Congratulations! You've been selected as a lucky winner. Claim your prize by clicking here!",phishing
+"Hello, Please find the Q4 financial statements attached for your review.",legitimate

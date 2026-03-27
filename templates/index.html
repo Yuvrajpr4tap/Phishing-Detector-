@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Email Detector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            min-height: 150px;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            font-size: 1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .result-container.show {
+            display: block;
+        }
+        
+        .result-container.phishing {
+            background: #fee;
+            border: 2px solid #f44;
+        }
+        
+        .result-container.legitimate {
+            background: #efe;
+            border: 2px solid #4f4;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .result-icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+        
+        .result-text h2 {
+            margin-bottom: 5px;
+        }
+        
+        .result-text p {
+            font-size: 0.95em;
+            color: #666;
+        }
+        
+        .result-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .detail-card {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .detail-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .risk-high {
+            color: #d32f2f;
+        }
+        
+        .risk-medium {
+            color: #f57c00;
+        }
+        
+        .risk-low {
+            color: #388e3c;
+        }
+        
+        .probability-bar {
+            background: #ddd;
+            border-radius: 3px;
+            height: 20px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .probability-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 5px;
+            color: white;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #fee;
+            border: 2px solid #f44;
+            color: #d32f2f;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .error.show {
+            display: block;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .comparison-results {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .comparison-results {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Phishing Email Detector</h1>
+            <p>Paste your email text to check if it's phishing or legitimate</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('analyzer')">Analyzer</button>
+            <button class="tab-btn" onclick="switchTab('compare')">Compare Models</button>
+            <button class="tab-btn" onclick="switchTab('about')">About</button>
+        </div>
+        
+        <!-- Analyzer Tab -->
+        <div id="analyzer" class="tab-content active">
+            <div class="form-group">
+                <label for="emailText">Email Content:</label>
+                <textarea id="emailText" placeholder="Paste the email text here..."></textarea>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn-primary" onclick="analyzeEmail()">Analyze Email</button>
+                <button class="btn-secondary" onclick="clearForm()">Clear</button>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing...</p>
+            </div>
+            
+            <div class="error" id="error"></div>
+            
+            <div class="result-container" id="result"></div>
+        </div>
+        
+        <!-- Compare Models Tab -->
+        <div id="compare" class="tab-content">
+            <div class="form-group">
+                <label for="emailTextCompare">Email Content:</label>
+                <textarea id="emailTextCompare" placeholder="Paste the email text here..."></textarea>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn-primary" onclick="compareModels()">Compare Results</button>
+                <button class="btn-secondary" onclick="clearCompare()">Clear</button>
+            </div>
+            
+            <div class="loading" id="loadingCompare">
+                <div class="spinner"></div>
+                <p>Analyzing with both models...</p>
+            </div>
+            
+            <div class="error" id="errorCompare"></div>
+            
+            <div id="comparisonResult"></div>
+        </div>
+        
+        <!-- About Tab -->
+        <div id="about" class="tab-content">
+            <div style="padding: 20px; background: #f9f9f9; border-radius: 5px;">
+                <h2>About This Detector</h2>
+                <p style="margin-top: 15px;">This phishing email detector uses Natural Language Processing (NLP) and Machine Learning to identify suspicious emails.</p>
+                
+                <h3 style="margin-top: 20px;">How it works:</h3>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>TF-IDF Vectorization:</strong> Converts email text into numerical features</li>
+                    <li><strong>Machine Learning:</strong> Uses Naive Bayes or Logistic Regression models trained on email samples</li>
+                    <li><strong>Confidence Score:</strong> Shows how confident the model is in its prediction</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">Tech Stack:</h3>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Python</li>
+                    <li>Scikit-learn (ML library)</li>
+                    <li>Pandas (Data processing)</li>
+                    <li>Flask (Web framework)</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">⚠️ Disclaimer:</h3>
+                <p style="margin-top: 10px; color: #666;">This tool is for educational purposes. Always verify emails independently and use additional security measures for important accounts.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function analyzeEmail() {
+            const emailText = document.getElementById('emailText').value.trim();
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const result = document.getElementById('result');
+            
+            error.classList.remove('show');
+            result.classList.remove('show');
+            
+            if (emailText.length < 10) {
+                error.textContent = 'Please enter at least 10 characters.';
+                error.classList.add('show');
+                return;
+            }
+            
+            loading.style.display = 'block';
+            
+            fetch('/api/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email_text: emailText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = 'none';
+                
+                if (data.error) {
+                    error.textContent = 'Error: ' + data.error;
+                    error.classList.add('show');
+                    return;
+                }
+                
+                displayResult(data, result);
+            })
+            .catch(err => {
+                loading.style.display = 'none';
+                error.textContent = 'Error: ' + err.message;
+                error.classList.add('show');
+            });
+        }
+        
+        function displayResult(data, container) {
+            const isPhishing = data.is_phishing;
+            const className = isPhishing ? 'phishing' : 'legitimate';
+            const icon = isPhishing ? '⚠️' : '✅';
+            const prediction = isPhishing ? 'PHISHING' : 'LEGITIMATE';
+            
+            let riskClass = '';
+            if (data.risk_level === 'HIGH') riskClass = 'risk-high';
+            else if (data.risk_level === 'MEDIUM') riskClass = 'risk-medium';
+            else riskClass = 'risk-low';
+            
+            const probabilityBars = Object.entries(data.probabilities).map(([label, prob]) => {
+                const percentage = (prob * 100).toFixed(1);
+                return `
+                    <div class="detail-card">
+                        <div class="detail-label">${label.charAt(0).toUpperCase() + label.slice(1)} Probability</div>
+                        <div class="probability-bar">
+                            <div class="probability-fill" style="width: ${percentage}%">${percentage}%</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = `
+                <div class="result-header">
+                    <div class="result-icon">${icon}</div>
+                    <div class="result-text">
+                        <h2>${prediction}</h2>
+                        <p>Risk Level: <span class="${riskClass}">${data.risk_level}</span></p>
+                    </div>
+                </div>
+                <div class="result-details">
+                    <div class="detail-card">
+                        <div class="detail-label">Confidence</div>
+                        <div class="detail-value">${(data.confidence * 100).toFixed(1)}%</div>
+                    </div>
+                    ${probabilityBars}
+                </div>
+            `;
+            
+            container.classList.add('show', className);
+        }
+        
+        function compareModels() {
+            const emailText = document.getElementById('emailTextCompare').value.trim();
+            const loading = document.getElementById('loadingCompare');
+            const error = document.getElementById('errorCompare');
+            const result = document.getElementById('comparisonResult');
+            
+            error.classList.remove('show');
+            result.innerHTML = '';
+            
+            if (emailText.length < 10) {
+                error.textContent = 'Please enter at least 10 characters.';
+                error.classList.add('show');
+                return;
+            }
+            
+            loading.style.display = 'block';
+            
+            fetch('/api/compare', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email_text: emailText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = 'none';
+                
+                if (data.error) {
+                    error.textContent = 'Error: ' + data.error;
+                    error.classList.add('show');
+                    return;
+                }
+                
+                displayComparison(data);
+            })
+            .catch(err => {
+                loading.style.display = 'none';
+                error.textContent = 'Error: ' + err.message;
+                error.classList.add('show');
+            });
+        }
+        
+        function displayComparison(data) {
+            const result = document.getElementById('comparisonResult');
+            
+            const createModelCard = (modelName, modelData) => {
+                const isPhishing = modelData.is_phishing;
+                const icon = isPhishing ? '⚠️' : '✅';
+                const prediction = isPhishing ? 'PHISHING' : 'LEGITIMATE';
+                let riskClass = '';
+                if (modelData.risk_level === 'HIGH') riskClass = 'risk-high';
+                else if (modelData.risk_level === 'MEDIUM') riskClass = 'risk-medium';
+                else riskClass = 'risk-low';
+                
+                return `
+                    <div class="result-container ${isPhishing ? 'phishing' : 'legitimate'} show">
+                        <div class="result-header">
+                            <div class="result-icon">${icon}</div>
+                            <div class="result-text">
+                                <h3>${modelName}</h3>
+                                <p>${prediction} | Risk: <span class="${riskClass}">${modelData.risk_level}</span></p>
+                            </div>
+                        </div>
+                        <div class="result-details">
+                            <div class="detail-card">
+                                <div class="detail-label">Confidence</div>
+                                <div class="detail-value">${(modelData.confidence * 100).toFixed(1)}%</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            };
+            
+            result.innerHTML = `
+                <div style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px;">Model Comparison</h3>
+                    <div class="comparison-results">
+                        ${createModelCard('Naive Bayes', data.naive_bayes)}
+                        ${createModelCard('Logistic Regression', data.logistic_regression)}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function clearForm() {
+            document.getElementById('emailText').value = '';
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('error').classList.remove('show');
+        }
+        
+        function clearCompare() {
+            document.getElementById('emailTextCompare').value = '';
+            document.getElementById('comparisonResult').innerHTML = '';
+            document.getElementById('errorCompare').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
