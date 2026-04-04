@@ -1,4 +1,4 @@
-# 🔍 Phishing Email Detector
+# Phishing Email Detector
 
 A machine learning-based NLP application to detect phishing emails and distinguish them from legitimate emails. Includes both CLI and Flask web interface.
 
@@ -284,9 +284,6 @@ python train_model.py
 - Not needed for this project, can safely ignore
 - If issue persists, try: `pip install --upgrade pandas scikit-learn`
 
-## Disclaimer
-
-⚠️ **Educational Purpose**: This detector is for learning and demonstration purposes. For real email security, use professional tools and always verify suspicious emails independently.
 
 ## Future Enhancements
 
@@ -296,15 +293,3 @@ python train_model.py
 - [ ] Real-time model updates
 - [ ] Advanced spam detection
 - [ ] Deep learning models (LSTM, BERT)
-
-## License
-
-MIT License - Feel free to use and modify
-
-## Author
-
-Phishing Detector | NLP & ML Project
-
----
-
-**Happy detecting! 🔍**
