@@ -165,14 +165,3 @@ results = detector.predict_batch([email1, email2, email3])
 | Port 5000 in use | Change port in `app.py` to 5001+ |
 | Python not found | Ensure Python 3.8+ is installed |
 
-## Need More Help?
-
-Check the full [README.md](README.md) for:
-- Detailed API documentation
-- Model explanations
-- Advanced usage
-- Improvement tips
-
----
-
-**You're ready! 🚀** Pick an interface and start detecting phishing emails!
