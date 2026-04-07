@@ -300,14 +300,3 @@ app.run(debug=False, host='0.0.0.0', port=5000)
 | Setup (Unix) | `bash setup.sh` |
 
 ---
-
-## More Help
-
-- **Quick Start**: See [QUICKSTART.md](QUICKSTART.md)
-- **Full Docs**: See [README.md](README.md)
-- **File Guide**: See [FILES.md](FILES.md)
-- **Code Examples**: See [example.py](example.py)
-
----
-
-**Happy detecting! 🔍**
